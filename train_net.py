@@ -2,11 +2,15 @@ import numpy as np
 from neural_net import BasicNet
 from mnist import load_mnist
 
+# A basic three-layer net
+
 (x_train, y_train), (x_test, y_test) = load_mnist()
 
 train_size = 60000
 batch_size = 100
 batchs_per_epoch = int(train_size / batch_size)
+until_epoch = 20
+learning_rate = 0.0
 until_epoch = 30
 learning_rate = 0.01
 
@@ -34,6 +38,11 @@ while epoch < until_epoch:
         loss = forward['loss']
         loss_record.append(loss)
         if i == batchs_per_epoch - 1:
+            print('epoch ', epoch, ': loss: ', loss)
+
+wrong_predictions = []
+
+for p in range(0, 1000):
             print('loss: ', loss)
 
 for p in range(60, 80):
@@ -42,6 +51,18 @@ for p in range(60, 80):
 
     predicted_digit = np.argmax(prediction)
     label_digit = np.argmax(y_test[p])
+
+    if not predicted_digit == label_digit:
+         instance = (p, predicted_digit, label_digit)
+         wrong_predictions.append(instance)
+
+for instance in wrong_predictions:
+    print('\n', instance[0])
+    print('pred=', instance[1])
+    print('labl=', instance[2])
+    
+accuracy = 100 * (1000 - len(wrong_predictions)) / 1000
+print('\naccuracy = ', accuracy, '%')
 
     print(p+1)
     print('pred: ', predicted_digit)
